@@ -14,8 +14,12 @@ template<class T>
 class Field {
 	std::unique_ptr<T[]> data;
 public:
+	using Coordinate = std::tuple<int, int>;
 	Field() : data(new T[9*9]){}
 	Field(const Field& other): data(new T[9*9]) {
+		memcpy(data.get(),other.data.get(), 9*9);
+	}
+	Field& operator=(const Field& other) {
 		memcpy(data.get(),other.data.get(), 9*9);
 	}
 	void set(int x, int y, T value) {
@@ -43,7 +47,7 @@ public:
     	return data->get(x, y);
     }
     virtual BlockIteratorBase& operator++() =0;
-    std::tuple<int, int> coordinate() {
+    typename Field<T>::Coordinate coordinate() {
     	return {x, y};
     }
 protected:

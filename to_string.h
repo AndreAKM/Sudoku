@@ -28,11 +28,11 @@ std::string to_string(const Field<char>& field) {
 
 inline
  std::string to_string(Resolver::DecisionAreaItem item) {
-	 std::string res("( ");
+	 std::string res("{ ");
 	 for(auto s: item) {
 		 res += std::to_string(s) + ", ";
 	 }
-	 res += ")";
+	 res += "}";
 	 return res;
  }
 
@@ -41,10 +41,8 @@ template<class T>
 std::string to_string(const Field<T>& field) {
 	std::string res;
 	for (int y = 0; y != 9; ++y) {
-		res += "|";
 		for (int x = 0; x != 9; ++x) {
 			res += std::to_string(field.get(x, y));
-			res += "|";
 		}
 		res += "\n";
 	}
@@ -62,6 +60,20 @@ std::string to_string(Resolver::Status s) {
 		return "UNKNOWN STATTUS";
 	};
 	}
+}
+
+template<class T>
+std::string prettyPrint(const Field<T>& field) {
+	std::string res;
+	for (int y = 0; y != 9; ++y) {
+		for (int x = 0; x != 9; ++x) {
+			res += std::to_string(field.get(x, y));
+			if(x%3 == 2) res += " | ";
+		}
+		if(y%3 == 2) res += "\n---------------";
+		res += "\n";
+	}
+	return res;
 }
 
 #endif /* TO_STRING_H_ */

@@ -35,14 +35,14 @@ public:
 	std::shared_ptr<Field<char>> getField() {
 		return field;
 	}
-
-private:
 	static std::tuple<int, int> neighbors(int c);
 	int fillDecisionArea();
 	int ruleResolve(int x, int y);
 	int groupResolve(int x, int y);
 	int updateDecision(int x, int y, char decision);
 	void reorder();
+	std::tuple<int, int, char, char> variantsResolve() { return variants; }
+private:
 	Status enumeration();
 	using Algorithm = int (Resolver::*)(int, int);
 	int resolveStep(Algorithm alg);
@@ -51,6 +51,7 @@ private:
 	Status status = NOTREDY;
 	std::multimap<int, std::tuple<int, int>> certaintyOrder;
 	std::shared_ptr<DecisionArea> decisionArea;
+	std::tuple<int, int, char, char> variants;
 };
 
 

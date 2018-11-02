@@ -109,7 +109,7 @@ int Resolver::fillDecisionArea() {
 		}
 	}
 
-	LOG( "decisionArea: \n %s\n" ,std::to_string(*decisionArea).c_str());
+	LOG( "decisionArea: \n %s\n" ,prettyPrint(*decisionArea).c_str());
 	return count;
 }
 
@@ -184,8 +184,8 @@ void Resolver::reorder() {
 			}
 		}
 	}
-	LOG( "decisionArea: \n %s\n" ,std::to_string(*decisionArea).c_str());
-	LOG( "pre result: \n %s\n" ,std::to_string(*field).c_str());
+	LOG( "decisionArea: \n%s\n" ,prettyPrint(*decisionArea).c_str());
+	LOG( "pre result: \n%s\n" ,prettyPrint(*field).c_str());
 }
 
 int Resolver::resolveStep(Resolver::Algorithm alg) {
@@ -221,13 +221,20 @@ Resolver::Status Resolver::enumeration() {
 		auto st = rc.resolve();//std::async(std::launch::async, &Resolver::resolve, rc);
 		LOG("get %d for (%d, %d) - %s \n", c, x, y, std::to_string(st).c_str());
 		if (st == RESOLVED && status == RESOLVED) {
+			std::get<2>(variants) = c;
 			status = TOO_MORE_SOLVE;
 			return status;
 		}
 		if (st == RESOLVED) {
-			field = rc.field;
-			LOG("RESOLVER:\n%s", std::to_string(*field).c_str());
+			*field = *fc;
+			variants = {x, y, c, 0};
+			LOG("RESOLVER:\n%s", prettyPrint(*field).c_str());
 			status = RESOLVED;
+		}
+		if (st == TOO_MORE_SOLVE) {
+			variants = rc.variantsResolve();
+			status = rc.status;
+			return status;
 		}
 	}
 
