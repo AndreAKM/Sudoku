@@ -16,10 +16,8 @@ inline
 std::string to_string(const Field<char>& field) {
 	std::string res;
 	for (int y = 0; y != 9; ++y) {
-		res += "|";
 		for (int x = 0; x != 9; ++x) {
 			res += char(field.get(x, y) + '0');
-			res += "|";
 		}
 		res += "\n";
 	}

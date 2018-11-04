@@ -37,6 +37,9 @@ public:
 	}
 	static std::tuple<int, int> neighbors(int c);
 	int fillDecisionArea();
+	int emptyBlockCount() {
+		return certaintyOrder.size();
+	}
 	int ruleResolve(int x, int y);
 	int groupResolve(int x, int y);
 	int updateDecision(int x, int y, char decision);

@@ -30,7 +30,7 @@ public:
 	std::shared_ptr<Field<char>> generate(Level l);
 
 protected:
-	void rendomFill(Level l);
+	void rendomFill();
 };
 
 #endif /* GENERATOR_H_ */

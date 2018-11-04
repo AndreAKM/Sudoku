@@ -38,22 +38,35 @@ int resolve(const char* filename) {
 				std::cout << "The task hasn't been resolved yet.";
 				break;
 		}
-	} catch (ParserException& e) {
-		std::cerr << e.what() << std::endl;
+	} catch (ParserException &e) {
+		const char* m = e.what();
+		std::cout << m << std::endl;
 	}
 	return 0;
 }
 
 int generation(const char* filename, int level) {
-	Parser p(filename);
 	Generator gen;
+	--level;
 	if(level > Generator::Sumury) {
 		std::cout << "UNKNOWN LEVEL" << std::endl;
 		return -1;
 	}
 
 	auto field = gen.generate(Generator::Level (level));
+	Resolver rc(field);
+	int decisionSize = rc.fillDecisionArea();
+	int countEmptyBloc = rc.emptyBlockCount();
+	int difficultLevel = decisionSize / countEmptyBloc;
+	printf ("Task report: empty blocks: %d;\ngeneral variants: %d;\ndifficult: %d\n",
+			countEmptyBloc, decisionSize, difficultLevel);
 	std::cout << "generated task: \n" << prettyPrint(*field) << std::endl;
+	Parser p(filename);
+	try {
+		p.saveTask(*field);
+	} catch(ParserException &e){
+		std::cerr << e.what() << std::endl;
+	}
 //	try {
 //
 //
@@ -84,7 +97,6 @@ int main(int argc, char* argv[]) {
 	else if(cmpgen == 0) {
 		int level = std::atoi(argv[++id]);
 		generation(argv[id == 3 ? 1 : 3], level);
-		std::cout << argv[0] << " GENERIC has not been implemented yet " << std::endl;
 	}
 	else {
 		printf("Usage the following format: %s %s[N_LEVEL]|%s FILE_NAME \n", argv[0], GENERATION, RESOLVE);

@@ -14,6 +14,7 @@
 #include <string>
 #include <memory>
 #include "Field.h"
+#include "to_string.h"
 
 using namespace std;
 
@@ -46,4 +47,16 @@ Resolver Parser::makeResolver() {
 	}
 
 	return Resolver(field);
+}
+
+void Parser::saveTask(const Field<char>& field) {
+  ofstream myfile (fileName);
+  if (myfile.is_open())
+  {
+    myfile << std::to_string(field);
+    myfile.close();
+  }
+  else {
+	  throw CannotOpenFile(fileName);
+  }
 }

@@ -10,33 +10,26 @@
 #include <exception>
 #include <string>
 #include "Resolve.h"
+#include "Field.h"
 
 class ParserException : public std::exception {
-
+	std::string mess;
+public:
+	ParserException(std::string base, std::string data): mess(base + data){}
+	virtual const char*
+	what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_USE_NOEXCEPT {
+		return  mess.c_str();
+	}
 };
 
 class UnsupportedFileFormat: public ParserException {
-	std::string data;
 public:
-	UnsupportedFileFormat(std::string&& wrongData):data(wrongData) {}
-	virtual const char*
-	what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_USE_NOEXCEPT {
-		std::string mess("We couldn't pars the following line: ");
-		mess + data;
-		return  mess.c_str();
-	}
+	UnsupportedFileFormat(std::string&& wrongData):ParserException("We couldn't pars the following line: ", wrongData) {}
 };
 
 class CannotOpenFile: public ParserException {
-	std::string data;
 public:
-	CannotOpenFile(std::string fileName):data(fileName) {}
-	virtual const char*
-	what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_USE_NOEXCEPT {
-		std::string mess("We couldn't open file: ");
-		mess + data;
-		return  mess.c_str();
-	}
+	CannotOpenFile(std::string fileName):ParserException("We couldn't open file: ", fileName) {}
 };
 
 class Parser {
@@ -44,6 +37,7 @@ class Parser {
 public:
 	Parser(const char* fileName): fileName(fileName){}
 	Resolver makeResolver();
+	void saveTask(const Field<char>& field);
 };
 
 #endif /* PARSER_H_ */

@@ -9,9 +9,9 @@
 #include "to_string.h"
 #include "logger.h"
 const char Generator::startCount[] = {33, 28, 24,20};
-const int Generator::rendomGenTotal = 15;
+const int Generator::rendomGenTotal = 10;
 std::shared_ptr<Field<char>> Generator::generate(Generator::Level l) {
-	rendomFill(l);
+	rendomFill();
 	Resolver::Status s;
 	int count = rendomGenTotal;
 	do {
@@ -21,11 +21,13 @@ std::shared_ptr<Field<char>> Generator::generate(Generator::Level l) {
 			auto[x, y, v1, v2] = rc.variantsResolve();
 			field->set(x, y, v1);
 			++count;
+
 			LOG("get too more result so set (%d, %d) - %d\n", x, y, v1);
 		}
 		if(s == Resolver::NO_ONE_SOLVE) {
 			LOG("NO_ONE_SOLVE of GenTask \n%s\n", prettyPrint(*rc.getField()).c_str());
-			rendomFill(l);
+			count = 0;
+			rendomFill();
 		}
 		if(s == Resolver::RESOLVED) {
 			LOG("RESOLVED of GenTask \n%s\n", prettyPrint(*rc.getField()).c_str());
@@ -42,7 +44,7 @@ std::shared_ptr<Field<char>> Generator::generate(Generator::Level l) {
 	return field;
 }
 
-void Generator::rendomFill(Generator::Level l) {
+void Generator::rendomFill() {
 	field = std::make_shared<Field<char>>();
 	for (int i = 0; i != rendomGenTotal; ++i) {
 		int x, y;
